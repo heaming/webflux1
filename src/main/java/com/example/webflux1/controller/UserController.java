@@ -1,9 +1,8 @@
-package com.example.webflux1.Controller;
+package com.example.webflux1.controller;
 
 import com.example.webflux1.dto.UserCreateRequest;
 import com.example.webflux1.dto.UserResponse;
 import com.example.webflux1.dto.UserUpdateRequest;
-import com.example.webflux1.repository.User;
 import com.example.webflux1.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

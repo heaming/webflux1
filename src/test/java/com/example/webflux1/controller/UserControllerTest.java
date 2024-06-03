@@ -1,4 +1,4 @@
-package com.example.webflux1.Controller;
+package com.example.webflux1.controller;
 
 import com.example.webflux1.dto.UserCreateRequest;
 import com.example.webflux1.dto.UserResponse;
