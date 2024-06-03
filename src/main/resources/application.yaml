@@ -1,0 +1,9 @@
+spring.application.name: webflux1
+spring:
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    root: debug
