@@ -3,6 +3,10 @@ spring:
   output:
     ansi:
       enabled: always
+  r2dbc:
+    url: r2dbc:mysql://localhost:3307/fastsns
+    username: root
+    password: user
 
 logging:
   level:
