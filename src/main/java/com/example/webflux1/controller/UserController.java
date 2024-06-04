@@ -1,8 +1,10 @@
 package com.example.webflux1.controller;
 
 import com.example.webflux1.dto.UserCreateRequest;
+import com.example.webflux1.dto.UserPostResponse;
 import com.example.webflux1.dto.UserResponse;
 import com.example.webflux1.dto.UserUpdateRequest;
+import com.example.webflux1.service.PostsServiceV2;
 import com.example.webflux1.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import reactor.core.publisher.Mono;
 public class UserController {
 
     private final UserService userService;
+    private final PostsServiceV2 postsServiceV2;
 
     @PostMapping("")
     public Mono<UserResponse> createUser(@RequestBody UserCreateRequest request) {
@@ -43,6 +46,12 @@ public class UserController {
                         .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
+    @DeleteMapping("/search")
+    public Mono<ResponseEntity<?>> deleteUserByName(@RequestParam String name) {
+        return userService.deleteByName(name)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
+
     @PutMapping("/{id}")
     public Mono<ResponseEntity<UserResponse>> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
         // user x : 404 not found
@@ -50,6 +59,19 @@ public class UserController {
         return userService.update(id, request.getName(), request.getEmail())
                 .map(u -> ResponseEntity.ok(UserResponse.of(u)))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
+
+    /**
+    @Name: getUserPosts
+
+    @Param: id(userId)
+
+    @Usage: 특정 user의 posts 조회
+     **/
+    @GetMapping("/{id}/posts")
+    public Flux<UserPostResponse> getUserPosts(@PathVariable Long id) {
+        return postsServiceV2.findAllByUserId(id)
+                .map(UserPostResponse::of);
     }
 
 }

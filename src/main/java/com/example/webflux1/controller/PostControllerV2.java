@@ -36,7 +36,7 @@ public class PostControllerV2 {
 
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<?>> deletePost(@PathVariable Long id) {
-        return postsServiceV2.findById(id)
+        return postsServiceV2.deleteById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
