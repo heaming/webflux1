@@ -3,6 +3,7 @@ package com.example.webflux1.controller;
 import com.example.webflux1.dto.UserCreateRequest;
 import com.example.webflux1.dto.UserResponse;
 import com.example.webflux1.repository.User;
+import com.example.webflux1.service.PostsServiceV2;
 import com.example.webflux1.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,12 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.blockhound.BlockHound;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,11 +27,34 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient
 class UserControllerTest {
 
+    static {
+//        BlockHound.install();
+        BlockHound.install(
+                builder -> builder.allowBlockingCallsInside("testclass", "method")
+        );
+    }
+
     @Autowired
     private WebTestClient webTestClient;
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private PostsServiceV2 postsServiceV2;
+
+    @Test
+    void blockHoundTest() {
+        StepVerifier.create(Mono.delay(Duration.ofSeconds(1))
+                .doOnNext(it -> {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+        ).verifyComplete();
+    }
 
     @Test
     void createUser() {
